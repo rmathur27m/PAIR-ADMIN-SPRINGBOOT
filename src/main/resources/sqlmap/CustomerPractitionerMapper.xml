@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.CustomerPractitionerMapper">
+
+	<select id="getAllCustomerPractitionerById" parameterType="int"
+		resultType="gov.uspto.patent.privatePair.admin.dto.CustomerPractitionerDto">
+		SELECT FK_CUSTOMER_NUMBER_REQUEST_ID,REGISTRATION_NO,GIVEN_NM,FAMILY_NM,MIDDLE_NM,NAME_SUFFIX_TX,ASSOCIATED_PURM_REG_NO_IN		
+		FROM ASSOCIATED_ATTORNEY
+		WHERE FK_CUSTOMER_NUMBER_REQUEST_ID = #{newCustomerNumberRequestId}
+	</select>
+
+	<resultMap type="CustomerPractitionerDto" id="CustomerPractitionerResult">
+		<result property="fk_customer_number_request_id" column="FK_CUSTOMER_NUMBER_REQUEST_ID" />
+		<result property="registration_no" column="REGISTRATION_NO" />
+		<result property="given_nm" column="GIVEN_NM" />
+		<result property="family_nm" column="FAMILY_NM" />
+		<result property="middle_nm" column="MIDDLE_NM" />
+		<result property="name_suffix" column="NAME_SUFFIX_TX" />
+		<result property="associated_purm_reg_no_in" column="ASSOCIATED_PURM_REG_NO_IN" />
+	</resultMap>
+
+	<insert id="insertCustomerPractitionerList">
+		INSERT All  
+			<foreach collection="customerPractitioner" item="us">
+				INTO 
+					ASSOCIATED_ATTORNEY (FK_CUSTOMER_NUMBER_REQUEST_ID,REGISTRATION_NO,GIVEN_NM,FAMILY_NM,MIDDLE_NM,NAME_SUFFIX_TX,ASSOCIATED_PURM_REG_NO_IN) 
+				VALUES
+					(#{us.fk_customer_number_request_id, javaType=Integer, jdbcType=NUMERIC}, 
+					#{us.registration_no, javaType=String, jdbcType=VARCHAR},
+					#{us.given_nm, javaType=String, jdbcType=VARCHAR},
+					#{us.family_nm, javaType=String, jdbcType=VARCHAR},
+					#{us.middle_nm, javaType=String, jdbcType=VARCHAR},
+					#{us.name_suffix, javaType=String, jdbcType=VARCHAR},
+					#{us.associated_purm_reg_no_in, javaType=String, jdbcType=VARCHAR})
+			</foreach>
+			SELECT * FROM DUAL
+	</insert>
+	
+	<update id="updateCustomerPractitionerListByRequestId" parameterType="map">
+        UPDATE ASSOCIATED_ATTORNEY            
+            <set>                    
+               ASSOCIATED_PURM_REG_NO_IN = 'Y'		            
+	        </set>
+	           WHERE FK_CUSTOMER_NUMBER_REQUEST_ID = #{newCustomerNumberRequestId} AND trim(REGISTRATION_NO) IN 
+	        <foreach item="us" index="index" collection="customerPractitioner"
+		             open="(" separator="," close=")">
+		        #{us.registration_no}
+		    </foreach>      
+    </update>
+    
+	<delete id="deleteCustomerPractitionerByRequestId" parameterType="int">
+		DELETE FROM ASSOCIATED_ATTORNEY WHERE FK_CUSTOMER_NUMBER_REQUEST_ID = #{newCustomerNumberRequestId}
+	</delete>
+
+</mapper>

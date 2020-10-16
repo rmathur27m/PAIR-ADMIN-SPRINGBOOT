@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.UpdateApplicationAddressMapper">
+	<select id="getUpdateAppAddressRequestById" parameterType="long" resultType="gov.uspto.patent.privatePair.admin.dto.UpdateApplicationAddressDto">
+    	SELECT fk_User_request_id as fKeyUserRequestId,
+	    	customer_no as customerNumber, 
+	    	application_id as application_id, 
+	    	patent_no as patentNumber,
+	    	corr_addr_change_in as corrAddrChaneIn,
+	    	maint_fee_addr_change_in as maintFeeAddrChaneIn,
+	    	attorney_authorization_in as attrAuthIn,
+	    	input_source_ct as inputSourceCt,
+	    	request_error_tx as requestErrorTx,
+	    	power_of_attorney_in as powerOfAttorneyIndicator,
+	    	corr_addr_change_in as corrAddrChangeIn
+	 	FROM APPLICATION_CUST_CHNG_RQST 
+    	WHERE fk_User_request_id = #{userRequestId}
+	</select>
+          
+ 	<resultMap type="UpdateApplicationAddressDto" id="UpdateApplicationAddressResult">
+ 		<result property="fKeyUserRequestId" column="fk_User_request_id"/>
+ 		<result property="customerNumber" column="customer_no"/>
+ 		<result property="application_id" column="application_id"/>
+ 		<result property="patentNumber" column="patent_no"/>
+		<result property="corrAddrChaneIn" column="corr_addr_change_in"/>
+		<result property="maintFeeAddrChaneIn" column="maint_fee_addr_change_in"/>
+		<result property="attrAuthIn" column="attorney_authorization_in"/>
+		<result property="inputSourceCt" column="input_source_ct"/>
+		<result property="requestErrorTx" column="request_error_tx"/>
+		<!--  <result property="userId" column="APPLICATION_CUST_CHNG_RQST_ID"/> -->
+		<result property="corrAddrChangeIn" column="corr_addr_change_in"/>
+ 	</resultMap>
+ 	   	
+	<insert id="insertUpdateAppAddressRequestWhenListIsEmpty" parameterType="map">
+		INSERT INTO APPLICATION_CUST_CHNG_RQST(fk_user_request_id, 
+		   										customer_no,
+		   										application_id,
+   												patent_no,
+   												corr_addr_change_in,
+   												maint_fee_addr_change_in,
+   												attorney_authorization_in,
+   												APPLICATION_CUST_CHNG_RQST_ID,
+   												REQUEST_ERROR_TX,
+   												POWER_OF_ATTORNEY_IN)
+    	VALUES(#{fKeyUserRequestId, javaType=Long, jdbcType=NUMERIC}, 
+    	   	#{customerNumber, javaType=Integer, jdbcType=NUMERIC},
+    	   	#{application_id, javaType=String, jdbcType=VARCHAR},
+    	   	#{patentNumber, javaType=String, jdbcType=VARCHAR},
+    	   	#{corrAddrChaneIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{maintFeeAddrChaneIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{attrAuthIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{userId, javaType=Long, jdbcType=NUMERIC},
+    	   	#{requestErrorTx, javaType=String, jdbcType=VARCHAR},
+    	   	#{powerOfAttorneyIndicator, javaType=String, jdbcType=VARCHAR}) 
+	</insert>
+	
+   	<insert id="insertUpdateAppAddressRequestList">
+		INSERT All  
+			<foreach collection="updateApplicationAddressNumbers" item="us">
+				INTO   	
+					 APPLICATION_CUST_CHNG_RQST(fk_user_request_id, 
+			   								customer_no,
+			   								application_id,
+	   										patent_no,
+	   										corr_addr_change_in,
+	   										maint_fee_addr_change_in,
+	   										attorney_authorization_in,
+	   										APPLICATION_CUST_CHNG_RQST_ID,
+	   										REQUEST_ERROR_TX,
+	   										POWER_OF_ATTORNEY_IN
+	   								    )
+    	VALUES(#{us.fKeyUserRequestId, javaType=String, jdbcType=VARCHAR}, 
+    	   	#{us.customerNumber, javaType=Integer, jdbcType=NUMERIC},
+    	   	#{us.application_id, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.patentNumber, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.corrAddrChaneIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.maintFeeAddrChaneIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.attrAuthIn, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.userId, javaType=Integer, jdbcType=NUMERIC},
+    	   	#{us.requestErrorTx, javaType=String, jdbcType=VARCHAR},
+    	   	#{us.powerOfAttorneyIndicator, javaType=String, jdbcType=VARCHAR}
+		) 
+		</foreach>
+			SELECT * FROM DUAL	
+	</insert>
+	
+	<delete id="deleteUpdateAppAddressByRequestId" parameterType="long">
+		DELETE FROM APPLICATION_CUST_CHNG_RQST WHERE fk_user_request_id = #{fkUserRequestId}
+	</delete>
+	
+	<update id="deleteUpdateApplicationAddressByUserRequestId" parameterType="map">
+		UPDATE USER_REQUEST
+		<set>
+			last_modified_ts = #{lastModifiedTimeStamp},
+			delete_in = #{deleteIndicator},
+			request_status_ct = #{requestStatusCount}
+		</set>
+		WHERE user_request_id = #{userRequestId}
+	</update>
+</mapper>

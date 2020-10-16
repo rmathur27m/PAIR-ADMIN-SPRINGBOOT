@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.CustomerCorrAddressMapper">
+	   	
+   	<insert id="insertCorrAddress" parameterType="CustomerCorrAddressDto">
+	INSERT INTO CUSTOMER_CORR_ADDRESS( 
+   		FK_USER_REQUEST_ID,
+		CUSTOMER_NO,
+        NAME_LINE_ONE_TX,
+        NAME_LINE_TWO_TX,
+        ADDRESS_LINE_ONE_TX,
+        ADDRESS_LINE_TWO_TX,
+        CITY_NM,
+        GEOGRAPHIC_REGION_NM,
+        POSTAL_CD,
+        COUNTRY_NM
+        )
+    	VALUES(#{fKeyUserRequestId}, 
+    	   	#{customerNumber},
+    	   	#{firmorIndividualNameLine1},
+    	   	#{firmorIndividualNameLine2},
+    	   	#{addressLine1},
+    	   	#{addressLine2},
+    	   	#{city},
+    	   	#{state},
+    	   	#{zip},
+    	   	#{country}    	   	
+		) 	
+	</insert>
+	
+	
+	
+	
+
+	<select id="getCustomerCorrAddressById" parameterType="long" resultType="gov.uspto.patent.privatePair.admin.dto.CustomerCorrAddressDto">
+      SELECT FK_USER_REQUEST_ID as fKeyUserRequestId,
+      CUSTOMER_NO as customerNumber,
+      NAME_LINE_ONE_TX as firmorIndividualNameLine1,
+      NAME_LINE_TWO_TX as firmorIndividualNameLine2,
+      ADDRESS_LINE_ONE_TX as addressLine1,
+      ADDRESS_LINE_TWO_TX as addressLine2,      
+      GEOGRAPHIC_REGION_NM as state,
+      CITY_NM as city,
+      POSTAL_CD as zip,
+      COUNTRY_NM as country
+      FROM CUSTOMER_CORR_ADDRESS, user_request 
+      WHERE CUSTOMER_CORR_ADDRESS.fk_user_request_id = user_request.USER_REQUEST_ID
+      and  fk_User_request_id = #{fKeyUserRequestId}
+	</select>
+	<resultMap type="CustomerCorrAddressDto" id="CustomerCorrAddressDtoResult">
+		<result property="fKeyUserRequestId" column="FK_USER_REQUEST_ID"/>
+		<result property="customerNumber" column="CUSTOMER_NO"/>
+		<result property="firmorIndividualNameLine1" column="NAME_LINE_ONE_TX"/>
+		<result property="firmorIndividualNameLine2" column="NAME_LINE_TWO_TX"/>
+		<result property="addressLine1" column="ADDRESS_LINE_ONE_TX"/>
+		<result property="addressLine2" column="ADDRESS_LINE_TWO_TX"/>
+		<result property="state" column="GEOGRAPHIC_REGION_NAME"/>
+		<result property="city" column="CITY_NM"/>
+		<result property="zip" column="POSTAL_CD"/>
+		<result property="country" column="COUNTRY_NAME"/>
+	</resultMap>
+	
+	<delete id="deleteCustomerCorrAddressById" parameterType="long">
+    	DELETE FROM CUSTOMER_CORR_ADDRESS WHERE fk_User_request_id = #{userRequestId}
+  	</delete>
+	
+</mapper>

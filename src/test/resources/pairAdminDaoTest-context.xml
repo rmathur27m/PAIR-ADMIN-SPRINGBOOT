@@ -1,0 +1,67 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">		
+
+	<bean id="propertyPlaceholderConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath: **PAIRAdmin.properties" />
+	</bean>
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- Configure DataSource in Spring Container and use it to build MyBatis SqlSessionFactory. -->
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:config/mybatis-config.xml" />
+		<property name="typeAliasesPackage" value="gov.uspto.patent.dto" />
+		<property name="mapperLocations" value="classpath:sqlmap/*.xml" />
+	</bean>
+
+	<!-- Configuring SqlSession Template which provides ThreadSafe SqlSession object -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>	
+
+	<!-- Configure the package name to find the Mapper Interfaces -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+		<property name="basePackage" value="gov.uspto.patent.dao.mapper" />
+	</bean>	
+	
+	<!-- Configuring TransactionManager to support Annotation based Transaction support -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="updateApplicationAddressDao" class="gov.uspto.patent.dao.UpdateApplicationAddressDao" />
+	
+	<bean id="userRequestDao" class="gov.uspto.patent.dao.UserRequestDao" />
+	
+	<bean id="entityChangeRequestDao" class="gov.uspto.patent.dao.EntityChangeRequestDao" />
+	
+	<bean id="pairUserDnDao" class="gov.uspto.patent.dao.PairUserDnDao" />	
+	
+	<bean id="userSignatureDao" class="gov.uspto.patent.dao.UserSignatureDao" />
+	
+	<bean id="viewRequestDao" class="gov.uspto.patent.dao.ViewRequestDao" />
+	
+</beans>

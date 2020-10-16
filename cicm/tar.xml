@@ -1,0 +1,21 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>tar</format>
+	</formats>
+					  
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>tar-staging</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+						
+		</fileSet>
+					  
+		   
+	</fileSets>
+</assembly>
+						

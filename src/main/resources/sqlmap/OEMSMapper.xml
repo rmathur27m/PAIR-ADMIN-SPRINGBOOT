@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.PCSEJBApp.dao.mapper.EJBApp.OEMSMapper">
+
+	<insert id="insertOEMSTransaction" parameterType="map">	
+		INSERT INTO SECURE_ORDER_VALIDATION 
+                (TRANSACTION_ID,DOCUMENT_ID, VALIDATION_CD, CUSTOMER_NO, 
+                CREATED_DATETIME, LAST_MODIFIED_DATETIME, LAST_MODIFIED_USERID ) 
+                VALUES(
+                #{transactionId, javaType=String, jdbcType=VARCHAR},
+                #{documentID, javaType=String, jdbcType=VARCHAR},
+                'P',
+                #{customerNumber, javaType=Integer, jdbcType=NUMERIC},
+                sysdate,
+                sysdate,
+                'PPAIR'
+                )
+	</insert>
+	
+</mapper>

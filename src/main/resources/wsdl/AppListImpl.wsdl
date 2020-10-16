@@ -1,0 +1,56 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservices.score.uspto.gov/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="GetApplicationList" targetNamespace="http://webservices.score.uspto.gov/">
+    <types>
+        <xs:schema xmlns:tns="http://webservices.score.uspto.gov/" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://webservices.score.uspto.gov/" version="1.0">
+            <xs:element name="element-applicationNumbersType" nillable="true" type="tns:application-numbers-type"/>
+            <xs:element name="element-beginEndDates" nillable="true" type="tns:dateRange"/>
+            <xs:element name="element-string" nillable="true" type="xs:string"/>
+            <xs:complexType name="dateRange">
+                <xs:sequence>
+                    <xs:element name="beginDate" type="xs:date"/>
+                    <xs:element name="endDate" type="xs:date"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="application-numbers-type">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="application-number" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </types>
+    <message name="AppList_GetAppList">
+        <part element="tns:element-beginEndDates" name="BeginEndDates"/>
+    </message>
+    <message name="element-string">
+        <part element="tns:element-string" name="element-string"/>
+    </message>
+    <message name="AppList_GetAppListResponse">
+        <part element="tns:element-applicationNumbersType" name="ApplicationNumberList"/>
+    </message>
+    <portType name="AppList">
+        <operation name="GetAppList" parameterOrder="BeginEndDates">
+            <input message="tns:AppList_GetAppList"/>
+            <output message="tns:AppList_GetAppListResponse"/>
+            <fault message="tns:element-string" name="element-string"/>
+        </operation>
+    </portType>
+    <binding name="AppListBinding" type="tns:AppList">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetAppList">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="element-string">
+                <soap:fault name="element-string" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="GetApplicationList">
+        <port binding="tns:AppListBinding" name="AppListImplPort">
+            <soap:address location="http://score-fqt.etc.uspto.gov/ScoreWSWeb/services/AppListImpl"/>
+        </port>
+    </service>
+</definitions>

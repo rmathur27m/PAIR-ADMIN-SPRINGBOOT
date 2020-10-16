@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.ViewRequestMapper">
+
+	<select id="getEntityRequestsforView" parameterType="map"
+		resultType="gov.uspto.patent.privatePair.admin.dto.ViewRequestDto">
+		SELECT u.user_request_id as  pairId,
+		u.last_modified_ts as lastUpdatedTs,
+		e.customer_no	as customerNumber,
+		e.ATTORNEY_DOCKET_NO	as docketNumber,
+		e.APPLICATION_ID	as appNumber,
+		e.PROPOSED_BUSINESS_ENTITY_CT	as statusChangeType,
+		u.request_status_ct as status
+		FROM USER_REQUEST u
+		JOIN ENTITY_CHANGE_REQUEST e
+		ON u.user_request_id = e.fk_user_request_id
+		JOIN PAIR_USER_DN d
+		ON u.fk_user_id = d.user_id
+		WHERE request_status_ct IN
+		 <foreach item="myitem" collection="requestStatusList" 
+                        open="(" separator="," close=")"> 
+                        #{myitem} 
+                </foreach>		
+<!-- 		AND type_of_request = #{requestType}	 -->
+<!-- 		AND (delete_in <> '"Y"' OR delete_in is null) -->
+		AND delete_in IS NULL
+		AND u.last_modified_ts &gt;= SYSDATE - #{requestDays}
+		AND d.dn = #{privatePAIRdn}
+	</select>
+
+	<resultMap type="ViewRequestDto" id="ViewEntityRequestResult">
+		<result property="pairId" column="user_request_id" />
+		<result property="lastUpdatedTs" column="last_modified_ts" />
+		<result property="customerNumber" column="customer_no" />
+		<result property="status" column="request_status_ct" />
+	</resultMap>
+	
+	<select id="getUpdateAddrRequestsforView" parameterType="map"
+		resultType="gov.uspto.patent.privatePair.admin.dto.ViewRequestDto">
+		SELECT distinct(u.user_request_id) as  UpdateAddrPairId,
+		u.last_modified_ts as UpdateAddrTs,
+		a.customer_no	as updateAddrCN,
+		u.request_status_ct as UpdateAddrStatus
+		FROM USER_REQUEST u
+		JOIN APPLICATION_CUST_CHNG_RQST a
+		ON u.user_request_id = a.fk_user_request_id
+		JOIN PAIR_USER_DN d
+		ON u.fk_user_id = d.user_id
+		WHERE request_status_ct IN
+		 <foreach item="myitem" collection="requestStatusList" 
+                        open="(" separator="," close=")"> 
+                        #{myitem} 
+                </foreach>
+	<!-- AND type_of_request = #{requestType}  -->
+		AND delete_in IS NULL
+		AND u.last_modified_ts &gt;= SYSDATE - #{requestDays}
+		AND d.dn = #{privatePAIRdn}
+	</select>
+
+	<resultMap type="ViewRequestDto" id="ViewUpdateAddrRequestResult">
+		<result property="UpdateAddrPairId" column="user_request_id" />
+		<result property="UpdateAddrTs" column="last_modified_ts" />
+		<result property="updateAddrCN" column="customer_no" />
+		<result property="UpdateAddrStatus" column="request_status_ct" />
+	</resultMap>
+	
+	<select id="getCustomerRequestsforView" parameterType="map"
+		resultType="gov.uspto.patent.privatePair.admin.dto.ViewRequestDto">
+		SELECT u.user_request_id as  customerPairId,
+		u.last_modified_ts as customerTs,
+		c.customer_no	as newCustomerNumber,
+		c.name_line_one_tx	as customerName,
+		c.address_line_one_tx	as customerAddressLine,
+		c.city_nm	as customerCity,
+		c.cfk_geographic_region_cd	as customerState,
+		c.postal_cd	as customerPostalCode,
+		u.request_status_ct as customerStatus
+		FROM USER_REQUEST u
+		JOIN CUSTOMER_NUMBER_REQUEST c
+		ON u.user_request_id = c.fk_user_request_id
+		JOIN PAIR_USER_DN d
+		ON u.fk_user_id = d.user_id
+		WHERE request_status_ct IN
+		 <foreach item="myitem" collection="requestStatusList" 
+                        open="(" separator="," close=")"> 
+                        #{myitem} 
+                </foreach>
+		<!-- AND type_of_request = #{requestType}  -->
+		AND delete_in IS NULL
+		AND u.last_modified_ts &gt;= SYSDATE - #{requestDays}
+		AND d.dn = #{privatePAIRdn}
+	</select>
+
+	<resultMap type="ViewRequestDto" id="ViewCustomerRequestResult">
+		<result property="customerPairId" column="user_request_id" />
+		<result property="customerTs" column="last_modified_ts" />
+		<result property="newCustomerNumber" column="customer_no" />
+		<result property="customerName" column="name_line_one_tx" />
+		<result property="customerAddressLine" column="address_line_one_tx" />
+		<result property="customerCity" column="city_nm" />
+		<result property="customerState" column="cfk_geographic_region_cd" />
+		<result property="customerPostalCode" column="postal_cd" />
+		<result property="customerStatus" column="request_status_ct" />
+	</resultMap>
+	
+</mapper>

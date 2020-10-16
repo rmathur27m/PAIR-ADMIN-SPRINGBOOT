@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.UserRequestMapper">
+
+	<select id="getUserRequestById" parameterType="long"
+		resultType="gov.uspto.patent.privatePair.admin.dto.UserRequestDto">
+		SELECT user_request_id as userRequestId,
+		fk_user_id as fkUserId,
+		create_ts as createTimeStamp,
+		last_modified_ts as lastModifiedTimeStamp,
+		request_ct as typeOfRequest,
+		request_status_ct as requestStatusCount,
+		request_status_tx as requestDescriptionText,
+		submitter_registration_no as submitterRegistrationNo,
+		contact_full_nm as contactFullName,
+		contact_telephone_no_tx as contactTelephoneNoText,
+		contact_email_tx as contactEmailText,
+		user_comment_tx as userCommentsText,
+		create_user_id as createUserId,
+		last_modified_user_id as lastModifiedUserId,
+		lock_control_no as lockControlNo,
+		delete_in as deleteIndicator,
+		registered_attorney_auth_ct as registeredAttorneyType,
+		inventor_ct as independentInventorType
+		FROM USER_REQUEST 
+		WHERE user_request_id = #{userRequestId}
+	</select>
+
+	<resultMap type="UserRequestDto" id="UserRequestResult">
+		<result property="userRequestId" column="user_request_id" />
+		<result property="fkUserId" column="fk_user_id" />
+		<result property="createTimeStamp" column="create_ts" />
+		<result property="lastModifiedTimeStamp" column="last_modified_ts" />
+		<result property="typeOfRequest" column="request_ct" />
+		<result property="requestStatusCount" column="request_status_ct" />
+		<result property="requestDescriptionText" column="request_status_tx" />
+		<result property="submitterRegistrationNo" column="submitter_registration_no" />
+		<result property="contactFullName" column="contact_full_nm" />
+		<result property="contactTelephoneNoText" column="contact_telephone_no_tx" />
+		<result property="contactEmailText" column="contact_email_tx" />
+		<result property="userCommentsText" column="user_comment_tx" />
+		<result property="createUserId" column="create_user_id" />
+		<result property="lastModifiedUserId" column="last_modified_user_id" />
+		<result property="lockControlNo" column="lock_control_no" />
+		<result property="deleteIndicator" column="delete_in" />
+		<result property="registeredAttorneyType" column="registered_attorney_auth_ct" />
+		<result property="independentInventorType" column="inventor_ct" />
+	</resultMap>
+
+	<select id="getAllUserRequests" resultMap="UserRequestResult">
+		SELECT * FROM
+		USER_REQUEST
+	</select>
+
+	<insert id="insertUserRequest" parameterType="UserRequestDto"
+		useGeneratedKeys="true" keyProperty="userRequestId" keyColumn="USER_REQUEST_ID">
+
+		INSERT INTO USER_REQUEST(fk_user_id,
+		create_ts,
+		last_modified_ts,
+		request_ct,
+		request_status_ct,
+		request_status_tx,
+		submitter_registration_no,
+		contact_full_nm,
+		contact_telephone_no_tx,
+		contact_email_tx,
+		create_user_id,
+		last_modified_user_id,
+		lock_control_no,
+		delete_in,
+		user_comment_tx,
+		registered_attorney_auth_ct,
+		inventor_ct
+		)
+		VALUES(#{fkUserId},
+		#{createTimeStamp},
+		#{lastModifiedTimeStamp},
+		#{typeOfRequest},
+		#{requestStatusCount},
+		null,
+		#{submitterRegistrationNo},
+		#{contactFullName},
+		#{contactTelephoneNoText},
+		#{contactEmailText},
+		#{createUserId},
+		#{lastModifiedUserId},
+		#{lockControlNo},
+		#{deleteIndicator},
+		#{userCommentsText},
+		#{registeredAttorneyType},
+		#{independentInventorType}
+		)
+	</insert>
+
+	<update id="updateUserRequest" parameterType="UserRequestDto">
+		UPDATE USER_REQUEST
+		<set>
+			<if test="fkUserId != null and fkUserId != ''">
+				fk_user_id = #{fkUserId},
+			</if>
+
+			<if test="lastModifiedTimeStamp != null">
+				last_modified_ts = #{lastModifiedTimeStamp},
+			</if>
+
+			<if test="typeOfRequest != null and typeOfRequest != ''">
+				REQUEST_CT = #{typeOfRequest},
+			</if>
+
+			<if test="requestStatusCount != null and requestStatusCount != ''">
+				request_status_ct = #{requestStatusCount},
+			</if>
+
+			<if
+				test="submitterRegistrationNo != null and submitterRegistrationNo != ''">
+				submitter_registration_no = #{submitterRegistrationNo},
+			</if>
+
+			<if test="contactFullName != null and contactFullName != ''">
+				contact_full_nm = #{contactFullName},
+			</if>
+
+			<if test="contactTelephoneNoText != null and contactTelephoneNoText != ''">
+				contact_telephone_no_tx = #{contactTelephoneNoText},
+			</if>
+
+			<if test="contactEmailText != null and contactEmailText != ''">
+				contact_email_tx = #{contactEmailText},
+			</if>
+
+			<if test="lastModifiedUserId != null and lastModifiedUserId != ''">
+				last_modified_user_id = #{lastModifiedUserId},
+			</if>
+
+			<if test="lockControlNo != null and lockControlNo != ''">
+				lock_control_no = #{lockControlNo},
+			</if>
+
+			<if test="deleteIndicator != null and deleteIndicator != ''">
+				delete_in = #{deleteIndicator},
+			</if>
+
+			<if test="registeredAttorneyType != null and registeredAttorneyType != ''">
+				REGISTERED_ATTORNEY_AUTH_CT = #{registeredAttorneyType}
+			</if>
+
+			<if
+				test="independentInventorType != null and independentInventorType != ''">
+				INVENTOR_CT = #{independentInventorType}
+			</if>
+		</set>
+		WHERE user_request_id = #{userRequestId}
+	</update>
+
+	<delete id="deleteUserRequestByUserRequestId" parameterType="long">
+		DELETE FROM USER_REQUEST WHERE user_request_id = #{userRequestId}
+	</delete>
+
+	<update id="updateRequestStatusByUserRequestId" parameterType="UserRequestDto">
+		UPDATE USER_REQUEST
+		<set>
+			request_status_ct = #{requestStatusCount},
+			last_modified_ts = #{lastModifiedTimeStamp},
+			REQUEST_STATUS_TX = #{requestDescriptionText}
+		</set>
+		WHERE user_request_id = #{userRequestId}
+	</update>
+	
+	<update id="updateDeleteIndicatorByUserRequestId" parameterType="UserRequestDto">
+		UPDATE USER_REQUEST
+		<set>
+			delete_in = #{deleteIndicator},
+			last_modified_ts = #{lastModifiedTimeStamp},
+			request_status_ct = #{requestStatusCount}
+		</set>
+		WHERE user_request_id = #{userRequestId}
+	</update>
+
+
+</mapper>

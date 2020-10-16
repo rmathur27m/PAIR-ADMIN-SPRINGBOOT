@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.PairUserDnMapper">
+	<select id="getPairUserDnByDn" parameterType="String" resultType="String">
+    	SELECT USER_ID as userId
+     	FROM PAIR_USER_DN 
+    	WHERE dn = #{dn} AND
+              DELETE_FLAG IS NULL
+	</select>
+	
+	<select id="getPairUserDtoByDn" parameterType="String" resultType="gov.uspto.patent.privatePair.admin.dto.PairUserDnDto">
+    	SELECT USER_ID as userId,
+    	       USER_NAME as username,
+    	       PASS_WORD as password,
+    	       SYSADMINID as sysAdminId,
+    	       INS_DATE as insDate,
+    	       UPD_DATE as updDate,
+    	       DELETE_FLAG as deleteFlag,
+    	       ACCESS_FLAG as accessFlag,
+    	       DN as dn,
+    	       COMMON_NM as commonName, 
+    	       PAIR_USER_DN_ID as pairUserDnId
+     	FROM PAIR_USER_DN 
+    	WHERE dn = #{dn} AND
+    	      DELETE_FLAG IS NULL
+	</select>
+	
+	<resultMap type="PairUserDnDto" id="PairUserDnResult">
+ 		<result property="userId" column="user_id"/>
+ 		<result property="username" column="user_name"/>
+ 		<result property="password" column="pass_word"/>
+ 		<result property="sysAdminId" column="sysadminid"/>
+ 		<result property="insDate" column="ins_date"/>
+		<result property="updDate" column="upd_date"/>
+		<result property="deleteFlag" column="delete_flag"/>
+		<result property="accessFlag" column="access_flag"/>
+		<result property="dn" column="dn"/>
+		<result property="commonName" column="common_nm"/>
+		<result property="pairUserDnId" column="pair_user_dn_id"/>
+   	</resultMap>
+   	
+   	<select id="hasPairUserDn" parameterType="map"
+		resultType="gov.uspto.patent.privatePair.admin.dto.PairUserDnDto">
+		SELECT USER_ID as userId,   
+			   SYSADMINID as sysAdminId,
+    	       INS_DATE as insDate,
+    	       UPD_DATE as updDate,
+    	       DELETE_FLAG as deleteFlag,
+    	       ACCESS_FLAG as accessFlag, 	       
+    	       DN as dn,
+    	       COMMON_NM as commonName, 
+    	       PAIR_USER_DN_ID as pairUserDnId
+     	FROM PAIR_USER_DN 
+		WHERE PAIR_USER_DN_ID IN
+		 <foreach item="myitem" index="index" collection="regNumberList" 
+                        open="(" separator="," close=")"> 
+                        #{myitem} 
+         </foreach>
+        AND DELETE_FLAG IS NULL		
+	</select>
+
+	<resultMap type="PairUserDnDto" id="PairUserDnRegListResult">
+		<result property="userId" column="user_id"/>
+		<result property="sysAdminId" column="sysadminid"/>
+		<result property="insDate" column="ins_date"/>
+		<result property="updDate" column="upd_date"/>
+		<result property="deleteFlag" column="delete_flag"/>
+		<result property="accessFlag" column="access_flag"/>
+ 		<result property="dn" column="dn"/>
+		<result property="commonName" column="common_nm"/>
+		<result property="pairUserDnId" column="pair_user_dn_id"/>
+	</resultMap>
+   	
+   	<insert id="insertPairUserDn" parameterType="PairUserDnDto">
+		INSERT INTO PAIR_USER_DN(user_id, 
+   								 user_name, 
+		   						 pass_word,
+		   						 sysadminid,
+   								 ins_date,
+   								 upd_date, 
+   								 delete_flag,
+   								 access_flag,
+   								 dn,
+   								 common_nm,
+   								 pair_user_dn_id
+   						   		)
+    	VALUES(#{userId}, 
+    		#{username}, 
+    	   	#{password},
+    	   	#{sysAdminId},
+    	   	#{insDate},
+    	   	#{updDate},
+    	   	#{deleteFlag},
+    	   	#{accessFlag},
+    	   	#{dn},
+    	   	#{commonName},
+    	   	#{pairUserDnId}
+		) 	
+	</insert>
+	
+	<delete id="detelePairUserDn" parameterType="String">
+    	DELETE FROM PAIR_USER_DN WHERE dn = #{dn}
+  	</delete>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.PairCustomerOptMapper">
+	   	
+   	<insert id="insertPairCustomerOpt" parameterType="PairCustomerOptDto">
+		INSERT INTO PAIR_CUSTOMER_OPT(customer_no, 
+   								 optin_ind, 
+		   						 last_modified_ts,
+		   						 distinguished_nm,
+   								 opt_dt,
+   								 postcard_mail_optin_tx, 
+   								 postcard_mail_opt_dt,
+   								 seq_no
+   						   		)
+    	VALUES(#{customerNumber}, 
+    		#{optInIndicator}, 
+    	   	#{lastModifiedTs},
+    	   	#{distinguishedName},
+    	   	#{optDate},
+    	   	#{postCardMailOptInTransaction},
+    	   	#{postCardMailOptDate},
+    	   	#{sequenceNumber}
+		) 	
+	</insert>
+		
+</mapper>

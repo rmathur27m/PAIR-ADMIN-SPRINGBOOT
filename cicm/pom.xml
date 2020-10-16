@@ -1,0 +1,190 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<parent>
+<groupId>gov.uspto.cicm</groupId>
+<artifactId>uspto-corporate-pom</artifactId>
+<version>1.5.12.1</version>
+</parent>
+<groupId>
+gov.uspto.patentlegacy.private-pair.admin.cloudforms
+</groupId>
+<artifactId>PRIVATE-PAIR-PAIRAdmin-CF-BUNDLE</artifactId>
+<version>${version}</version>
+<!--
+ We want to use properties, so it can be overridden via command line 
+-->
+<name>PRIVATE-PAIR-PAIRAdmin-CF-BUNDLE</name>
+<packaging>pom</packaging>
+<description/>
+<!--
+ 
+	  | See PSB documentation for more info on bundles
+	  |    http://usptoocio/OIEO/epsd/psb/PSBWiki/PSB%20PaaS%20-%20Bundles.aspx
+	
+-->
+<properties>
+<version>${version}</version>
+<!--
+ We are setting the version here, so it can be overridden via command line. 
+-->
+<!--  PAIRAdmin  -->
+<PAIRAdmin_layer>svcsdm</PAIRAdmin_layer>
+<PAIRAdmin_layer2>svcsgs</PAIRAdmin_layer2>
+<PAIRAdmin_server_type>jboss</PAIRAdmin_server_type>
+<PAIRAdmin_release_number>1.0-SNAPSHOT</PAIRAdmin_release_number>
+<PAIRAdmin_gitversion_prefix>/master</PAIRAdmin_gitversion_prefix>
+<!--
+ The SVN prefix to use for relevant checkouts. (use tags/XXXYYYZZZ for builds from tags) 
+-->
+</properties>
+<dependencies/>
+<build>
+<plugins>
+<!--  BEGIN BUILDING  -->
+<!--  Disable compilation  -->
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-compiler-plugin</artifactId>
+<version>3.2</version>
+<executions>
+<execution>
+<id>default-compile</id>
+<phase>none</phase>
+</execution>
+</executions>
+</plugin>
+<!--  END BUILDING  -->
+<!--  BEGIN TESTING  -->
+<!--  Disable Unit-Testing  -->
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-surefire-plugin</artifactId>
+<version>2.9</version>
+<configuration>
+<skipTests>true</skipTests>
+</configuration>
+</plugin>
+<!--  END TESTING  -->
+<!--  BEGIN PACKAGING  -->
+<!--
+ Generate our properties file for version capturing. 
+-->
+<plugin>
+<groupId>org.codehaus.mojo</groupId>
+<artifactId>properties-maven-plugin</artifactId>
+<version>1.0-alpha-2</version>
+<executions>
+<execution>
+<id>WriteVersions</id>
+<phase>package</phase>
+<goals>
+<goal>write-project-properties</goal>
+</goals>
+<configuration>
+<outputFile>${project.basedir}/tar-staging/versions.txt</outputFile>
+</configuration>
+</execution>
+</executions>
+</plugin>
+<!--
+ 
+			   | Check out our configuration and prepare to copy it into the proper layout. 
+			
+-->
+<!--  Retrieve files and stage them.  -->
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-dependency-plugin</artifactId>
+<version>2.9</version>
+<executions>
+<execution>
+<id>PAIRAdmin-download-svc</id>
+<phase>package</phase>
+<goals>
+<goal>copy</goal>
+</goals>
+<configuration>
+<artifactItems>
+<artifactItem>
+<groupId>gov.uspto.patentlegacy.private-pair.admin</groupId>
+<artifactId>pairadmin</artifactId>
+<version>${PAIRAdmin_release_number}</version>
+<type>war</type>
+<destFileName>pairadmin.war</destFileName>
+</artifactItem>
+</artifactItems>
+<outputDirectory>
+${project.basedir}/tar-staging/${PAIRAdmin_layer}/${PAIRAdmin_server_type}/artifacts/
+</outputDirectory>
+</configuration>
+</execution>
+<execution>
+<id>PAIRAdmin-download</id>
+<phase>package</phase>
+<goals>
+<goal>copy</goal>
+</goals>
+<configuration>
+<artifactItems>
+<artifactItem>
+<groupId>gov.uspto.patentlegacy.private-pair.admin</groupId>
+<artifactId>pairadmin</artifactId>
+<version>${PAIRAdmin_release_number}</version>
+<type>war</type>
+<destFileName>pairadmin.war</destFileName>
+</artifactItem>
+</artifactItems>
+<outputDirectory>
+${project.basedir}/tar-staging/${PAIRAdmin_layer2}/${PAIRAdmin_server_type}/artifacts/
+</outputDirectory>
+</configuration>
+</execution>
+</executions>
+</plugin>
+<!--  We want to archive our results. -->
+<plugin>
+<artifactId>maven-assembly-plugin</artifactId>
+<version>2.4</version>
+<configuration>
+<descriptors>
+<descriptor>${project.basedir}/tar.xml</descriptor>
+</descriptors>
+<outputDirectory>${project.basedir}</outputDirectory>
+</configuration>
+<executions>
+<execution>
+<id>tar</id>
+<phase>package</phase>
+<goals>
+<goal>single</goal>
+</goals>
+</execution>
+</executions>
+</plugin>
+<!--  END PACKAGING  -->
+<!--  BEGIN CLEANUP  -->
+<!--
+    We need to tell the mvn clean stage to also removed the created zip, when found, and to run a VS cleanup as well. 
+-->
+<plugin>
+<artifactId>maven-clean-plugin</artifactId>
+<version>2.5</version>
+<configuration>
+<filesets>
+<fileset>
+<directory>${project.basedir}</directory>
+<includes>
+<include>*-bin.tar</include>
+</includes>
+<excludes> </excludes>
+</fileset>
+<fileset>
+<directory>${project.basedir}/tar-staging</directory>
+</fileset>
+</filesets>
+</configuration>
+</plugin>
+<!--  END CLEANUP  -->
+</plugins>
+</build>
+</project>

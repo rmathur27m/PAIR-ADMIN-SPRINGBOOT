@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.PCSEJBApp.dao.mapper.CustomerMapper">
+    <select id="customerValidation" parameterType="String" resultType="int">
+        SELECT count(*) FROM ipt1intppty WHERE CUST_NO  = #{customerNo}
+    </select>
+<!--
+    <select id="checkCustomer" parameterType="String" resultType="int">
+        SELECT count(*) FROM PILOT_CUSTOMER WHERE CUSTOMER_NO  =#{customerNo}
+    </select>-->
+
+
+    <insert id="saveCustomer"  parameterType="CustomerVo">
+        INSERT INTO PILOT_CUSTOMER (CUSTOMER_NO,REQUESTOR_FULL_NM,
+        REQUESTOR_REGISTRATION_NO,REQUESTOR_TELEPHONE_NO,
+        REQUESTOR_EXT_NO,REQUESTOR_EMAIL_TX,
+        CONTACT_FULL_NM,CONTACT_REGISTRATION_NO,CONTACT_TELEPHONE_NO,
+        CONTACT_EXT_NO,CONTACT_EMAIL_TX,ACTIVE_IN,ADD_TS,
+        REMOVE_TS,CREATE_TS,CREATE_USER_ID,
+        LAST_MOD_TS,LAST_MOD_USER_ID,LOCK_CONTROL_NO)
+        VALUES(#{customerNumber, javaType=String, jdbcType=VARCHAR},
+        #{requestorName, javaType=String, jdbcType=VARCHAR},
+        #{requestorRegNo, javaType=String, jdbcType=VARCHAR},
+        #{requestorPhoneNumber, javaType=String, jdbcType=VARCHAR},
+        #{requestorPhoneExt, javaType=String, jdbcType=VARCHAR},
+        #{requestorEmail, javaType=String, jdbcType=VARCHAR},
+        #{pocName, javaType=String, jdbcType=VARCHAR},
+        #{pocRegNo, javaType=String, jdbcType=VARCHAR},
+        #{pocPhoneNumber, javaType=String, jdbcType=VARCHAR},
+        #{pocPhoneExt, javaType=String, jdbcType=VARCHAR},
+        #{pocEmail, javaType=String, jdbcType=VARCHAR},
+        #{indicator, javaType=String, jdbcType=VARCHAR},
+        #{pilotAddedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{pilotRemovedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{dBCreatedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{userName, javaType=String, jdbcType=VARCHAR},
+        #{lastModifyDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{userName, javaType=String, jdbcType=VARCHAR},
+        #{lockControlNO, javaType=Integer, jdbcType=NUMERIC})
+    </insert>
+
+
+    <insert id="insertCustomerHistory"  parameterType="CustomerVo">
+        INSERT INTO PILOT_CUSTOMER_HISTORY (FK_PILOT_CUSTOMER_ID,CUSTOMER_NO,REQUESTOR_FULL_NM,
+        REQUESTOR_REGISTRATION_NO,REQUESTOR_TELEPHONE_NO,
+        REQUESTOR_EXT_NO,REQUESTOR_EMAIL_TX,CONTACT_FULL_NM,
+        CONTACT_REGISTRATION_NO,CONTACT_TELEPHONE_NO,
+        CONTACT_EXT_NO,CONTACT_EMAIL_TX,ACTIVE_IN, ADD_TS,REMOVE_TS,
+        CREATE_TS,CREATE_USER_ID,LAST_MOD_TS,LAST_MOD_USER_ID)
+        VALUES(#{pilotCustomerId, javaType=String, jdbcType=VARCHAR},
+        #{customerNumber, javaType=String, jdbcType=VARCHAR},
+        #{requestorName, javaType=String, jdbcType=VARCHAR},
+        #{requestorRegNo, javaType=String, jdbcType=VARCHAR},
+        #{requestorPhoneNumber, javaType=String, jdbcType=VARCHAR},
+        #{requestorPhoneExt, javaType=String, jdbcType=VARCHAR},
+        #{requestorEmail, javaType=String, jdbcType=VARCHAR},
+        #{pocName, javaType=String, jdbcType=VARCHAR},
+        #{pocRegNo, javaType=String, jdbcType=VARCHAR},
+        #{pocPhoneNumber, javaType=String, jdbcType=VARCHAR},
+        #{pocPhoneExt, javaType=String, jdbcType=VARCHAR},
+        #{pocEmail, javaType=String, jdbcType=VARCHAR},
+        #{indicator, javaType=String, jdbcType=VARCHAR},
+        #{pilotAddedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{pilotRemovedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{dBCreatedDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{userName, javaType=String, jdbcType=VARCHAR},
+        #{lastModifyDate, javaType=java.sql.Timestamp, jdbcType=TIME},
+        #{userName, javaType=String, jdbcType=VARCHAR})
+    </insert>
+
+	<select id="getCustomerInfo" parameterType="String" resultType="gov.uspto.patent.privatePair.PCSEJBApp.dto.CustomerVo">
+	       SELECT PILOT_CUSTOMER_ID as pilotCustomerId,
+	       CUSTOMER_NO as customerNumber,
+	       REQUESTOR_FULL_NM as requestorName,
+	       REQUESTOR_REGISTRATION_NO as requestorRegNo,
+	       REQUESTOR_TELEPHONE_NO as requestorPhoneNumber,
+           REQUESTOR_EXT_NO as requestorPhoneExt,
+           REQUESTOR_EMAIL_TX as requestorEmail,
+           CONTACT_FULL_NM as pocName,
+           CONTACT_REGISTRATION_NO as pocRegNo,
+           CONTACT_TELEPHONE_NO as pocPhoneNumber,
+           CONTACT_EXT_NO as pocPhoneExt,
+           CONTACT_EMAIL_TX as pocEmail,
+           ACTIVE_IN as indicator,
+           ADD_TS as pilotAddedDate,
+           REMOVE_TS as pilotRemovedDate, 
+           CREATE_TS as createdDate,
+           CREATE_USER_ID as userName,
+           LAST_MOD_TS as lastModifyDate,
+           LAST_MOD_USER_ID as lastModifyUserId
+           FROM PILOT_CUSTOMER  
+           WHERE CUSTOMER_NO = #{customerNo}
+	</select>
+	<resultMap type="CustomerVo" id="CustomerVoResult">
+		<result property="pilotCustomerId" column="PILOT_CUSTOMER_ID" />
+		<result property="customerNumber" column="CUSTOMER_NO" />
+		<result property="requestorName" column="REQUESTOR_FULL_NM" />
+		<result property="requestorRegNo" column="REQUESTOR_REGISTRATION_NO" />
+		<result property="requestorPhoneNumber" column="REQUESTOR_TELEPHONE_NO" />
+		<result property="requestorPhoneExt" column="REQUESTOR_EXT_NO" />
+		<result property="requestorEmail" column="REQUESTOR_EMAIL_TX" />
+		<result property="pocName" column="CONTACT_FULL_NM" />
+		<result property="pocRegNo" column="CONTACT_REGISTRATION_NO" />
+		<result property="pocPhoneNumber" column="CONTACT_TELEPHONE_NO" />
+		<result property="pocPhoneExt" column="CONTACT_EXT_NO" />
+		<result property="pocEmail" column="CONTACT_EMAIL_TX" />
+		<result property="indicator" column="ACTIVE_IN" />
+		<result property="pilotAddedDate" column="ADD_TS" />
+		<result property="pilotRemovedDate" column="REMOVE_TS" />
+		<result property="createdDate" column="CREATE_TS" />
+		<result property="userName" column="CREATE_USER_ID" />
+		<result property="lastModifyDate" column="LAST_MOD_TS" />
+		<result property="lastModifyUserId" column="LAST_MOD_USER_ID" />		
+	</resultMap>
+
+    <update id="updateCustomer" parameterType="CustomerVo">
+        UPDATE PILOT_CUSTOMER
+        <set>
+            <if test="requestorName != null">
+                REQUESTOR_FULL_NM  = #{requestorName},
+            </if>
+            <if test="requestorRegNo != null">
+                REQUESTOR_REGISTRATION_NO  = #{requestorRegNo},
+            </if>
+            <if test="requestorPhoneNumber != null">
+                REQUESTOR_TELEPHONE_NO  = #{requestorPhoneNumber},
+            </if>
+            <if test="requestorPhoneExt != null">
+                REQUESTOR_EXT_NO  = #{requestorPhoneExt},
+            </if>
+            <if test="requestorEmail != null">
+                REQUESTOR_EMAIL_TX = #{requestorEmail},
+            </if>
+            <if test="pocName != null">
+                CONTACT_FULL_NM  = #{pocName},
+            </if>
+            <if test="pocRegNo != null">
+                CONTACT_REGISTRATION_NO  = #{pocRegNo},
+            </if>
+            <if test="pocPhoneNumber != null">
+                CONTACT_TELEPHONE_NO  = #{pocPhoneNumber},
+            </if>
+            <if test="pocPhoneExt != null">
+                CONTACT_EXT_NO  = #{pocPhoneExt},
+            </if>
+            <if test="pocEmail != null">
+                CONTACT_EMAIL_TX  = #{pocEmail},
+            </if>
+            <if test="indicator != null">
+                ACTIVE_IN  = #{indicator},
+            </if>
+            <if test="pilotAddedDate != null">
+                ADD_TS  = #{pilotAddedDate},
+            </if>
+            <if test="pilotRemovedDate != null">
+                REMOVE_TS  = #{pilotRemovedDate},
+            </if>
+            <if test="dBCreatedDate != null">
+                CREATE_TS  = #{dBCreatedDate},
+            </if>
+            <if test="userName != null">
+                CREATE_USER_ID  = #{userName},
+            </if>
+            <if test="lastModifyDate != null">
+                LAST_MOD_TS  = #{lastModifyDate},
+            </if>
+            <if test="userName != null">
+                LAST_MOD_USER_ID  = #{userName},
+            </if>
+                LOCK_CONTROL_NO  = '1',
+
+        </set>
+        WHERE CUSTOMER_NO = #{customerNumber}
+    </update>
+    
+    <select id="getCustomersList" parameterType="map" resultType="gov.uspto.patent.privatePair.PCSEJBApp.dto.CustomerVo">
+	       SELECT CUSTOMER_NO as customerNumber,
+	       REQUESTOR_FULL_NM as requestorName,
+	       REQUESTOR_REGISTRATION_NO as requestorRegNo, 
+	       REQUESTOR_TELEPHONE_NO as requestorPhoneNumber,
+           REQUESTOR_EXT_NO as requestorPhoneExt, 
+           REQUESTOR_EMAIL_TX as requestorEmail,
+           CONTACT_FULL_NM as pocName,
+           CONTACT_REGISTRATION_NO as pocRegNo, 
+           CONTACT_TELEPHONE_NO as pocPhoneNumber,
+		   CONTACT_EXT_NO as pocPhoneExt, 
+           CONTACT_EMAIL_TX as pocEmail,
+           ACTIVE_IN as indicator,
+           ADD_TS as pilotAddedDate,
+           REMOVE_TS as pilotRemovedDate,
+           CREATE_TS as createdDate,
+           CREATE_USER_ID as userName,
+           LAST_MOD_TS as lastModifyDate,
+           LAST_MOD_USER_ID as lastModifyUserId
+           FROM PILOT_CUSTOMER
+            <if test ="customerNumber !=null">
+                WHERE CUSTOMER_NO = #{customerNumber}
+            </if>
+            <if test="sortOrder!=null" >
+                ORDER BY CUSTOMER_NO ${sortOrder}
+            </if>
+      </select>
+    <!--WHERE CUSTOMER_NO = #{customerNumber}
+    ORDER BY CUSTOMER_NO ${sortOrder}-->
+     <!-- AND GREATEST(NVL(ADD_TS, CREATE_TS),NVL(REMOVE_TS,CREATE_TS),CREATE_TS) >= to_date(#{startDate},'DD-MON-YY')                    
+           AND GREATEST(NVL(ADD_TS, CREATE_TS),NVL(REMOVE_TS,CREATE_TS),CREATE_TS) <= to_date(#{endDate},'DD-MON-YY') -->           
+	<!-- </select> -->
+	<resultMap type="CustomerVo" id="CustomerListResult">
+		<result property="pilotCustomerId" column="PILOT_CUSTOMER_ID" />
+		<result property="customerNumber" column="CUSTOMER_NO" />
+		<result property="requestorName" column="REQUESTOR_FULL_NM" />
+		<result property="requestorRegNo" column="REQUESTOR_REGISTRATION_NO" />
+		<result property="requestorPhoneNumber" column="REQUESTOR_TELEPHONE_NO" />
+		<result property="requestorPhoneExt" column="REQUESTOR_EXT_NO" />
+		<result property="requestorEmail" column="REQUESTOR_EMAIL_TX" />
+		<result property="pocName" column="CONTACT_FULL_NM" />
+		<result property="pocRegNo" column="CONTACT_REGISTRATION_NO" />
+		<result property="pocPhoneNumber" column="CONTACT_TELEPHONE_NO" />
+		<result property="pocPhoneExt" column="CONTACT_EXT_NO" />
+		<result property="pocEmail" column="CONTACT_EMAIL_TX" />
+		<result property="indicator" column="ACTIVE_IN" />
+		<result property="pilotAddedDate" column="ADD_TS" />
+		<result property="pilotRemovedDate" column="REMOVE_TS" />
+		<result property="createdDate" column="CREATE_TS" />
+		<result property="userName" column="CREATE_USER_ID" />
+		<result property="lastModifyDate" column="LAST_MOD_TS" />
+		<result property="lastModifyUserId" column="LAST_MOD_USER_ID" />		
+	</resultMap>
+	
+	<select id="getCustomerHistoryList" parameterType="String" resultType="gov.uspto.patent.privatePair.PCSEJBApp.dto.CustomerVo">
+	       SELECT PILOT_CUSTOMER_ID as pilotCustomerId,
+	       CUSTOMER_NO as customerNumber,
+	       REQUESTOR_FULL_NM as requestorName,
+	       REQUESTOR_REGISTRATION_NO as requestorRegNo,
+	       REQUESTOR_TELEPHONE_NO as requestorPhoneNumber,
+           REQUESTOR_EXT_NO as requestorPhoneExt,
+           REQUESTOR_EMAIL_TX as requestorEmail,
+           CONTACT_FULL_NM as pocName,
+           CONTACT_REGISTRATION_NO as pocRegNo,
+           CONTACT_TELEPHONE_NO as pocPhoneNumber,
+           CONTACT_EXT_NO as pocPhoneExt,
+           CONTACT_EMAIL_TX as pocEmail,
+           ACTIVE_IN as indicator,
+           ADD_TS as pilotAddedDate,
+           REMOVE_TS as pilotRemovedDate, 
+           CREATE_TS as createdDate,
+           CREATE_USER_ID as userName,
+           LAST_MOD_TS as lastModifyDate,
+           LAST_MOD_USER_ID as lastModifyUserId
+           FROM PILOT_CUSTOMER  
+           WHERE CUSTOMER_NO = #{customerNo}
+           ORDER BY CREATE_TS DESC
+	</select>
+	<resultMap type="CustomerVo" id="CustomerVoHistoryResult">
+		<result property="pilotCustomerId" column="PILOT_CUSTOMER_ID" />
+		<result property="customerNumber" column="CUSTOMER_NO" />
+		<result property="requestorName" column="REQUESTOR_FULL_NM" />
+		<result property="requestorRegNo" column="REQUESTOR_REGISTRATION_NO" />
+		<result property="requestorPhoneNumber" column="REQUESTOR_TELEPHONE_NO" />
+		<result property="requestorPhoneExt" column="REQUESTOR_EXT_NO" />
+		<result property="requestorEmail" column="REQUESTOR_EMAIL_TX" />
+		<result property="pocName" column="CONTACT_FULL_NM" />
+		<result property="pocRegNo" column="CONTACT_REGISTRATION_NO" />
+		<result property="pocPhoneNumber" column="CONTACT_TELEPHONE_NO" />
+		<result property="pocPhoneExt" column="CONTACT_EXT_NO" />
+		<result property="pocEmail" column="CONTACT_EMAIL_TX" />
+		<result property="indicator" column="ACTIVE_IN" />
+		<result property="pilotAddedDate" column="ADD_TS" />
+		<result property="pilotRemovedDate" column="REMOVE_TS" />
+		<result property="createdDate" column="CREATE_TS" />
+		<result property="userName" column="CREATE_USER_ID" />
+		<result property="lastModifyDate" column="LAST_MOD_TS" />
+		<result property="lastModifyUserId" column="LAST_MOD_USER_ID" />		
+	</resultMap>
+
+</mapper>

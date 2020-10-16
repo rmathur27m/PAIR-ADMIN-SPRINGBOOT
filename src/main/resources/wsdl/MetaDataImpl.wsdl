@@ -1,0 +1,72 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://webservices.score.uspto.gov/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="GetMetaData"
+	targetNamespace="http://webservices.score.uspto.gov/">
+	<types>
+		<xs:schema xmlns:tns="http://webservices.score.uspto.gov/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://webservices.score.uspto.gov/" version="1.0">
+			<xs:element name="element-metaDataRecordsType"
+				nillable="true" type="tns:meta-data-records-type" />
+			<xs:element name="element-string" nillable="true"
+				type="xs:string" />
+			<xs:complexType name="meta-data-records-type">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="meta-data-record" type="tns:meta-data-type" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="meta-data-type">
+				<xs:sequence>
+					<xs:element name="mega-item" type="xs:string" />
+					<xs:element name="mega-item-total" type="xs:long" />
+					<xs:element name="version-number" type="xs:string" />
+					<xs:element minOccurs="0" name="subversion-number"
+						type="xs:string" />
+					<xs:element minOccurs="0" name="mailroomDateText"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</types>
+	<message name="MetaData_GetMetaData">
+		<part element="tns:element-string" name="ApplicationNumber" />
+	</message>
+	<message name="MetaData_GetMetaDataResponse">
+		<part element="tns:element-metaDataRecordsType" name="MetaData" />
+	</message>
+	<message name="element-string">
+		<part element="tns:element-string" name="element-string" />
+	</message>
+	<portType name="MetaData">
+		<operation name="GetMetaData"
+			parameterOrder="ApplicationNumber">
+			<input message="tns:MetaData_GetMetaData" />
+			<output message="tns:MetaData_GetMetaDataResponse" />
+			<fault message="tns:element-string" name="element-string" />
+		</operation>
+	</portType>
+	<binding name="MetaDataBinding" type="tns:MetaData">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="GetMetaData">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="element-string">
+				<soap:fault name="element-string" use="literal" />
+			</fault>
+		</operation>
+	</binding>
+	<service name="GetMetaData">
+		<port binding="tns:MetaDataBinding" name="MetaDataImplPort">
+			<soap:address
+				location="http://score-fqt.etc.uspto.gov/ScoreWSWeb/services/MetaDataImpl" />
+		</port>
+	</service>
+</definitions>

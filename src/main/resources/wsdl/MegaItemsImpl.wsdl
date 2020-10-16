@@ -1,0 +1,88 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://webservices.score.uspto.gov/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="GetMegaItems"
+	targetNamespace="http://webservices.score.uspto.gov/">
+	<types>
+		<xs:schema xmlns:tns="http://webservices.score.uspto.gov/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://webservices.score.uspto.gov/" version="1.0">
+			<xs:element name="element-megaItemRecordsType"
+				nillable="true" type="tns:mega-item-records-type" />
+			<xs:element name="element-megaItemsInputMessage"
+				nillable="true" type="tns:megaItemsInput-message" />
+			<xs:element name="element-string" nillable="true"
+				type="xs:string" />
+			<xs:complexType name="megaItemsInput-message">
+				<xs:sequence>
+					<xs:element name="ApplictionNumber" type="xs:string" />
+					<xs:element name="VersionNumber" type="xs:string" />
+					<xs:element name="MegaItemType" type="xs:string" />
+					<xs:element name="SubVersionNumber" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="mega-item-records-type">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded"
+						name="mega-item-record" type="tns:mega-item-record-type" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="mega-item-record-type">
+				<xs:sequence>
+					<xs:element name="mega-item-id" type="xs:string" />
+					<xs:element name="mega-item-name" type="xs:string" />
+					<xs:element minOccurs="0" name="item-total"
+						type="xs:string" />
+					<xs:element maxOccurs="unbounded" minOccurs="0"
+						name="process-code" type="tns:megaItemProcessCodeType" />
+					<xs:element name="item-size" type="xs:long" />
+					<xs:element minOccurs="0" name="mailroomDateText"
+						type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="megaItemProcessCodeType">
+				<xs:sequence />
+			</xs:complexType>
+		</xs:schema>
+	</types>
+	<message name="MegaItems_GetMegaItems">
+		<part element="tns:element-megaItemsInputMessage"
+			name="AppNumberVersionNumberMegaItemTypeSubVersionNumber" />
+	</message>
+	<message name="MegaItems_GetMegaItemsResponse">
+		<part element="tns:element-megaItemRecordsType" name="OutputPart" />
+	</message>
+	<message name="element-string">
+		<part element="tns:element-string" name="element-string" />
+	</message>
+	<portType name="MegaItems">
+		<operation name="GetMegaItems"
+			parameterOrder="AppNumberVersionNumberMegaItemTypeSubVersionNumber">
+			<input message="tns:MegaItems_GetMegaItems" />
+			<output message="tns:MegaItems_GetMegaItemsResponse" />
+			<fault message="tns:element-string" name="element-string" />
+		</operation>
+	</portType>
+	<binding name="MegaItemsBinding" type="tns:MegaItems">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="GetMegaItems">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="element-string">
+				<soap:fault name="element-string" use="literal" />
+			</fault>
+		</operation>
+	</binding>
+	<service name="GetMegaItems">
+		<port binding="tns:MegaItemsBinding" name="MegaItemsImplPort">
+			<soap:address
+				location="http://score-fqt.etc.uspto.gov/ScoreWSWeb/services/MegaItemsImpl" />
+		</port>
+	</service>
+</definitions>

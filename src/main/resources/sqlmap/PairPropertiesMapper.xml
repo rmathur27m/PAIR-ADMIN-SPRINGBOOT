@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gov.uspto.patent.privatePair.PCSEJBApp.dao.mapper.PairPropertiesMapper">
+
+    <select id="getPairPropertiesData" parameterType="map" resultType="gov.uspto.patent.privatePair.PCSEJBApp.dto.PairPropertyVO">
+        SELECT
+        PROPERTY_GROUP_NM as propertyGroup,
+        PROPERTY_NM as propertyName,
+        PROPERTY_KEY_TX as propertyKey,
+        PROPERTY_VALUE_VARRAY as valueList,
+        PROPERTY_MODE_TX as pairMode
+        FROM PAIR_PROPERTY
+        WHERE PROPERTY_MODE_TX != #{reverseMode}
+        AND ((PROPERTY_GROUP_NM IS NULL) OR PROPERTY_GROUP_NM = #{groupName})
+        AND PROPERTY_NM = #{propertyName}
+        ORDER BY ${propertyNameStr}
+    </select>
+    <resultMap type="PairPropertyVO" id="PairPropertyVOResult">
+        <result property="pilotCustomerId" column="PROPERTY_GROUP_NM" />
+        <result property="customerNumber" column="PROPERTY_NM" />
+        <result property="requestorName" column="PROPERTY_KEY_TX" />
+        <result property="requestorRegNo" column="PROPERTY_VALUE_VARRAY" />
+        <result property="requestorPhoneNumber" column="PROPERTY_MODE_TX" />
+    </resultMap>
+
+</mapper>

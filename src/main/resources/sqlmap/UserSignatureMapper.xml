@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.UserSignatureMapper">
+
+	<select id="getAllUserSignatureById" parameterType="long"
+		resultType="gov.uspto.patent.privatePair.admin.dto.UserSignatureDto">
+		SELECT fk_user_request_id as  fkUserRequestId,
+		submitter_signature_tx as userSignatureTx,
+		submitter_full_name_tx as userSignatureNmTx
+		FROM USER_SIGNATURE
+		WHERE fk_user_request_id = #{fkUserRequestId}
+	</select>
+
+	<resultMap type="UserSignatureDto" id="UserSignatureResult">
+		<result property="fkUserRequestId" column="fk_user_request_id" />
+		<result property="userSignatureTx" column="submitter_signature_tx" />
+		<result property="userSignatureNmTx" column="submitter_full_name_tx" />
+	</resultMap>
+
+
+	<insert id="insertUserSignatureList">
+		INSERT All  
+			<foreach collection="userSignatures" item="us">
+				INTO 
+					USER_SIGNATURE (fk_user_request_id, submitter_signature_tx, submitter_full_name_tx) 
+				VALUES
+					(#{us.fkUserRequestId, javaType=String, jdbcType=VARCHAR}, 
+					#{us.userSignatureTx, javaType=String, jdbcType=VARCHAR},
+					#{us.userSignatureNmTx, javaType=String, jdbcType=VARCHAR})
+			</foreach>
+			SELECT * FROM DUAL
+	</insert>
+
+
+	<delete id="deleteUserSignatureByRequestId" parameterType="long">
+		DELETE FROM USER_SIGNATURE WHERE fk_user_request_id = #{fkUserRequestId}
+	</delete>
+
+</mapper>

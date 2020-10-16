@@ -1,0 +1,67 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservices.score.uspto.gov/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="GetMegaItemDetail" targetNamespace="http://webservices.score.uspto.gov/">
+    <types>
+        <xs:schema xmlns:tns="http://webservices.score.uspto.gov/" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://webservices.score.uspto.gov/" version="1.0">
+            <xs:element name="element-megaItemDetailInputMessage" nillable="true" type="tns:megaItemDetailInput-message"/>
+            <xs:element name="element-megaItemDetailsType" nillable="true" type="tns:mega-item-details-type"/>
+            <xs:element name="element-string" nillable="true" type="xs:string"/>
+            <xs:complexType name="megaItemDetailInput-message">
+                <xs:sequence>
+                    <xs:element name="MegaItemId" type="xs:string"/>
+                    <xs:element name="SequenceNumbers" type="tns:sequence-list-numbers-type"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="sequence-list-numbers-type">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="sequence-number" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="mega-item-details-type">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="mega-item-content" type="tns:mega-item-content-type"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="mega-item-content-type">
+                <xs:all>
+                    <xs:element minOccurs="0" name="sequence-number" type="xs:string"/>
+                    <xs:element name="mega-item-content" type="xs:string"/>
+                </xs:all>
+            </xs:complexType>
+        </xs:schema>
+    </types>
+    <message name="element-string">
+        <part element="tns:element-string" name="element-string"/>
+    </message>
+    <message name="MegaItemDetail_GetMegaItemDetailResponse">
+        <part element="tns:element-megaItemDetailsType" name="OutputPart"/>
+    </message>
+    <message name="MegaItemDetail_GetMegaItemDetail">
+        <part element="tns:element-megaItemDetailInputMessage" name="MegaItemIdSequenceNumbers"/>
+    </message>
+    <portType name="MegaItemDetail">
+        <operation name="GetMegaItemDetail" parameterOrder="MegaItemIdSequenceNumbers">
+            <input message="tns:MegaItemDetail_GetMegaItemDetail"/>
+            <output message="tns:MegaItemDetail_GetMegaItemDetailResponse"/>
+            <fault message="tns:element-string" name="element-string"/>
+        </operation>
+    </portType>
+    <binding name="MegaItemDetailBinding" type="tns:MegaItemDetail">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetMegaItemDetail">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="element-string">
+                <soap:fault name="element-string" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="GetMegaItemDetail">
+        <port binding="tns:MegaItemDetailBinding" name="MegaItemDetailImplPort">
+            <soap:address location="http://score-fqt.etc.uspto.gov/ScoreWSWeb/services/MegaItemDetailImpl"/>
+        </port>
+    </service>
+</definitions>

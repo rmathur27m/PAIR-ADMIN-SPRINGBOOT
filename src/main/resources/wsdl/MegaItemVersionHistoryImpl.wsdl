@@ -1,0 +1,88 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://webservices.score.uspto.gov/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="GetMegaItemVersionHistory"
+	targetNamespace="http://webservices.score.uspto.gov/">
+	<types>
+		<xs:schema xmlns:tns="http://webservices.score.uspto.gov/"
+			xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://webservices.score.uspto.gov/" version="1.0">
+			<xs:element name="element-megaItemVerHistoryInputMessage"
+				nillable="true" type="tns:megaItemVerHistoryInput-message" />
+			<xs:element name="element-megaItemVersionsType"
+				nillable="true" type="tns:mega-item-versions-type" />
+			<xs:element name="element-string" nillable="true"
+				type="xs:string" />
+			<xs:complexType name="megaItemVerHistoryInput-message">
+				<xs:sequence>
+					<xs:element name="ApplicationNumber" type="xs:string" />
+					<xs:element name="MegaItemType" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="mega-item-versions-type">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded"
+						name="mega-item-version" type="tns:mega-item-version-type" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="mega-item-version-type">
+				<xs:sequence>
+					<xs:element name="version-number" type="xs:int" />
+					<xs:element minOccurs="0" name="subversion-number"
+						type="xs:int" />
+					<xs:element minOccurs="0" name="sequence-id"
+						type="xs:string" />
+					<xs:element name="best-copy-indicator" type="xs:boolean" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</types>
+	<message
+		name="MegaItemVersionHistory_GetMegaItemVersionHistoryResponse">
+		<part element="tns:element-megaItemVersionsType"
+			name="OutputPart" />
+	</message>
+	<message
+		name="MegaItemVersionHistory_GetMegaItemVersionHistory">
+		<part element="tns:element-megaItemVerHistoryInputMessage"
+			name="ApplicationNumberMegaItemType" />
+	</message>
+	<message name="element-string">
+		<part element="tns:element-string" name="element-string" />
+	</message>
+	<portType name="MegaItemVersionHistory">
+		<operation name="GetMegaItemVersionHistory"
+			parameterOrder="ApplicationNumberMegaItemType">
+			<input
+				message="tns:MegaItemVersionHistory_GetMegaItemVersionHistory" />
+			<output
+				message="tns:MegaItemVersionHistory_GetMegaItemVersionHistoryResponse" />
+			<fault message="tns:element-string" name="element-string" />
+		</operation>
+	</portType>
+	<binding name="MegaItemVersionHistoryBinding"
+		type="tns:MegaItemVersionHistory">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="GetMegaItemVersionHistory">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+			<fault name="element-string">
+				<soap:fault name="element-string" use="literal" />
+			</fault>
+		</operation>
+	</binding>
+	<service name="GetMegaItemVersionHistory">
+		<port binding="tns:MegaItemVersionHistoryBinding"
+			name="MegaItemVersionHistoryImplPort">
+			<soap:address
+				location="http://score-fqt.etc.uspto.gov/ScoreWSWeb/services/MegaItemVersionHistoryImpl" />
+		</port>
+	</service>
+</definitions>

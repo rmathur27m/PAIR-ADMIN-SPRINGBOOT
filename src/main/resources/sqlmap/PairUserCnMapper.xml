@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.PairUserCnMapper">
+	   	
+   	<insert id="insertPairUserCn" parameterType="PairUserCnDto">
+		INSERT INTO PAIR_USER_CN(user_id, 
+   								 cust_num,
+		   						 sysadminid,
+   								 ins_date,
+   								 upd_date, 
+   								 delete_flag,   								 
+   								 fk_pair_user_dn_id
+   						   		)
+    	VALUES(#{userId}, 
+    		#{custNum},
+    	   	#{sysAdminId},
+    	   	#{insDate},
+    	   	#{updDate},
+    	   	#{deleteFlag},
+    	   	#{pairUserDnId}
+		) 	
+	</insert>
+	
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.NewCustomerNumberMapper">
+ 	
+
+	<select id="getNewCustomerNumberRequestById" parameterType="long" resultType="gov.uspto.patent.privatePair.admin.dto.NewCustomerNumberDto">
+      SELECT FK_USER_REQUEST_ID as fKeyUserRequestId,
+      CREATE_TS as "timeStamp",
+      CUSTOMER_NUMBER_REQUEST_ID as customerNumberRequestId,
+      CUSTOMER_NO as customerNumber,
+      NAME_LINE_ONE_TX as firmorIndividualNameLine1,
+      NAME_LINE_TWO_TX as firmorIndividualNameLine2,
+      ADDRESS_LINE_ONE_TX as addressLine1,
+      ADDRESS_LINE_TWO_TX as addressLine2,
+      CITY_NM as city,
+      CFK_GEOGRAPHIC_REGION_CD as state,
+      POSTAL_CD as zip,
+      CFK_COUNTRY_CD as country,
+      TELEPHONE_NO_ONE_TX as telephone1,
+      TELEPHONE_NO_TWO_TX as telephone2,
+      TELEPHONE_NO_THREE_TX as telephone3,
+      EMAIL_ADDRESS_ONE_TX as eMail1,
+      EMAIL_ADDRESS_TWO_TX as eMail2,
+      EMAIL_ADDRESS_THREE_TX as eMail3,
+      FAX_NO_ONE_TX as fax1,
+      FAX_NO_TWO_TX as fax2,
+      ASSOCIATED_REG_NO_IN as isAssociateMyPNumber,
+      OA_ENROLLMENT_CT as outgoingCorrespondence
+      FROM CUSTOMER_NUMBER_REQUEST, user_request 
+      WHERE customer_number_request.fk_user_request_id = user_request.USER_REQUEST_ID
+      and  fk_User_request_id = #{fKeyUserRequestId}
+	</select>
+    <resultMap type="NewCustomerNumberDto" id="NewCustomerNumberRequestResult">
+		<result property="fKeyUserRequestId" column="FK_USER_REQUEST_ID"/>
+		<result property="timeStamp" column="CREATE_TS"/>
+		<result property="customerNumber" column="CUSTOMER_NO"/>
+		<result property="firmorIndividualNameLine1" column="NAME_LINE_ONE_TX"/>
+		<result property="firmorIndividualNameLine2" column="NAME_LINE_TWO_TX"/>
+		<result property="addressLine1" column="ADDRESS_LINE_ONE_TX"/>
+		<result property="addressLine2" column="ADDRESS_LINE_TWO_TX"/>
+		<result property="city" column="CITY_NM"/>
+		<result property="zip" column="POSTAL_CD"/>
+		<result property="country" column="CFK_COUNTRY_CD"/>
+		<result property="telephone1" column="TELEPHONE_NO_ONE_TX"/>
+		<result property="telephone2" column="TELEPHONE_NO_TWO_TX"/>
+		<result property="telephone3" column="TELEPHONE_NO_THREE_TX"/>
+		<result property="eMail1" column="EMAIL_ADDRESS_ONE_TX"/>
+		<result property="eMail2" column="EMAIL_ADDRESS_TWO_TX"/>
+		<result property="eMail3" column="EMAIL_ADDRESS_THREE_TX"/>
+		<result property="fax1" column="FAX_NO_ONE_TX"/>
+		<result property="fax2" column="FAX_NO_TWO_TX"/>
+		<result property="isAssociateMyPNumber" column="ASSOCIATED_REG_NO_IN"/>
+		<result property="outgoingCorrespondence" column="OA_ENROLLMENT_CT"/>
+		<result property="pocFiledBy" column="SUBMITTER_FULL_NM"/>
+		<result property="pocSignature" column="SUBMITTER_SIGNATURE_TX"/>
+   	</resultMap>      
+  
+	<insert id="insertNewCustomerNumberRequest" parameterType="NewCustomerNumberDto">
+		INSERT INTO CUSTOMER_NUMBER_REQUEST(
+		FK_USER_REQUEST_ID,
+		CUSTOMER_NO,
+        NAME_LINE_ONE_TX,
+        NAME_LINE_TWO_TX,
+        ADDRESS_LINE_ONE_TX,
+        ADDRESS_LINE_TWO_TX,
+        CITY_NM,
+        CFK_GEOGRAPHIC_REGION_CD,
+        POSTAL_CD,
+        CFK_COUNTRY_CD,
+        TELEPHONE_NO_ONE_TX,
+        TELEPHONE_NO_TWO_TX,
+        TELEPHONE_NO_THREE_TX,
+        EMAIL_ADDRESS_ONE_TX,
+        EMAIL_ADDRESS_TWO_TX,
+        EMAIL_ADDRESS_THREE_TX,
+        FAX_NO_ONE_TX,
+        FAX_NO_TWO_TX,
+        ASSOCIATED_REG_NO_IN,
+        OA_ENROLLMENT_CT
+        )
+    	VALUES(#{fKeyUserRequestId}, 
+    	   	#{customerNumber},
+    	   	#{firmorIndividualNameLine1},
+    	   	#{firmorIndividualNameLine2},
+    	   	#{addressLine1},
+    	   	#{addressLine2},
+    	   	#{city},
+    	   	#{state},
+    	   	#{zip},
+    	   	#{country},
+    	   	#{telephone1},
+    	   	#{telephone2},
+    	   	#{telephone3},
+    	   	#{eMail1},
+    	   	#{eMail2},
+    	   	#{eMail3},
+    	   	#{fax1},
+    	   	#{fax2},
+    	   	#{isAssociateMyPNumber},
+    	   	#{outgoingCorrespondence}
+		) 	
+	</insert>
+	
+	<delete id="deleteNewCustomerNumberRequestById" parameterType="long">
+    	DELETE FROM CUSTOMER_NUMBER_REQUEST WHERE fk_User_request_id = #{userRequestId}
+  	</delete>
+  	
+  	<update id="updateNewCustomerNumberRequestById" parameterType="NewCustomerNumberDto">
+    	UPDATE CUSTOMER_NUMBER_REQUEST
+    	<set>
+	    	<if test="customerNumber != null">
+				CUSTOMER_NO = #{customerNumber},
+			</if>
+	    	<if test="firmorIndividualNameLine1 != null">
+				NAME_LINE_ONE_TX = #{firmorIndividualNameLine1},
+			</if>
+	    	<if test="firmorIndividualNameLine2 != null">
+				NAME_LINE_TWO_TX = #{firmorIndividualNameLine2},
+			</if>
+	    	<if test="addressLine1 != null">
+				ADDRESS_LINE_ONE_TX = #{addressLine1},
+			</if>
+	    	<if test="addressLine2 != null">
+				ADDRESS_LINE_TWO_TX = #{addressLine2},
+			</if>
+	    	<if test="city != null">
+				CITY_NM = #{city},
+			</if>
+	    	<if test="state != null">
+				CFK_GEOGRAPHIC_REGION_CD = #{state},
+			</if>
+	    	<if test="zip != null">
+				POSTAL_CD = #{zip},
+			</if>
+	    	<if test="country != null">
+				CFK_COUNTRY_CD = #{country},
+			</if>
+	    	<if test="telephone1 != null">
+				TELEPHONE_NO_ONE_TX = #{telephone1},
+			</if>
+	    	<if test="telephone2 != null">
+				TELEPHONE_NO_TWO_TX = #{telephone2},
+			</if>
+	    	<if test="telephone3 != null">
+				TELEPHONE_NO_THREE_TX = #{telephone3},
+			</if>
+	    	<if test="eMail1 != null">
+				EMAIL_ADDRESS_ONE_TX = #{eMail1},
+			</if>
+	    	<if test="eMail2 != null">
+				EMAIL_ADDRESS_TWO_TX = #{eMail2},
+			</if>
+	    	<if test="eMail3 != null">
+				EMAIL_ADDRESS_THREE_TX = #{eMail3},
+			</if>
+	    	<if test="fax1 != null">
+				FAX_NO_ONE_TX = #{fax1},
+			</if>
+	    	<if test="fax2 != null">
+				FAX_NO_TWO_TX = #{fax2},
+			</if>
+	    	<if test="isAssociateMyPNumber != null">
+				ASSOCIATED_REG_NO_IN = #{isAssociateMyPNumber},
+			</if>
+	    	<if test="outgoingCorrespondence != null">
+				OA_ENROLLMENT_CT = #{outgoingCorrespondence},
+			</if>
+	 	</set>
+		WHERE fk_user_request_id = #{fKeyUserRequestId}    	
+  	</update>
+</mapper>

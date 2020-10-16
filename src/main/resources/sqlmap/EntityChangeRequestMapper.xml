@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="gov.uspto.patent.privatePair.admin.dao.mapper.EntityChangeRequestMapper">
+	<select id="getEntityChangeRequestById" parameterType="long" resultType="gov.uspto.patent.privatePair.admin.dto.EntityChangeRequestDto">
+    	SELECT application_id as application_id, 
+    		fk_User_request_id as fKeyUserRequestId,
+			current_business_entity_ct as curBusEntityCode,
+			proposed_business_entity_ct as propBusEntityCode,
+			micro_entity_type_ct as microEntityTypeCode,
+			micro_entity_gross_certif_in as microEntityGrossCert,
+			micro_entity_inst_certif_ct as microEntityInstCert,
+			attorney_docket_no as attorneyDocketNumber,
+			customer_no as customerNumber,
+			invention_title_tx as title
+     	FROM ENTITY_CHANGE_REQUEST 
+    	WHERE fk_User_request_id = #{fKeyUserRequestId}
+	</select>
+          
+ 	<resultMap type="EntityChangeRequestDto" id="EntityChangeRequestResult">
+ 		<result property="application_id" column="application_id"/>
+ 		<result property="curBusEntityCode" column="current_business_entity_ct"/>
+ 		<result property="propBusEntityCode" column="proposed_business_entity_ct"/>
+		<result property="fKeyUserRequestId" column="fk_user_request_id"/>
+		<result property="microEntityTypeCode" column="micro_entity_type_ct"/>
+		<result property="microEntityGrossCert" column="micro_entity_gross_certif_in"/>
+		<result property="microEntityInstCert" column="micro_entity_inst_certif_ct"/>
+		<result property="attorneyDocketNumber" column="attorney_docket_no"/>
+		<result property="customerNumber" column="customer_no"/>
+   	</resultMap>
+   	
+   	<select id="getAllEntityChangeRequests" resultMap="EntityChangeRequestResult">
+		SELECT * FROM ENTITY_CHANGE_REQUEST
+	</select>
+  
+	<insert id="insertEntityChangeRequest" parameterType="EntityChangeRequestDto">
+		INSERT INTO ENTITY_CHANGE_REQUEST(application_id, 
+		   								current_business_entity_ct,
+   										proposed_business_entity_ct,
+   										fk_user_request_id, 
+   										micro_entity_type_ct,
+   										micro_entity_gross_certif_in,
+   										micro_entity_inst_certif_ct,
+   										attorney_docket_no,
+   										invention_title_tx,
+   										customer_no
+   						   				)
+    	VALUES(#{application_id}, 
+    	   	#{curBusEntityCode},
+    	   	#{propBusEntityCode},
+    	   	#{fKeyUserRequestId},
+    	   	#{microEntityTypeCode},
+    	   	#{microEntityGrossCert},
+    	   	#{microEntityInstCert},
+    	   	#{attorneyDocketNumber},
+    	   	#{title},
+    	   	#{customerNumber}
+		) 	
+	</insert>
+	
+	<delete id="deleteEntityChangeRequestById" parameterType="long">
+    	DELETE FROM ENTITY_CHANGE_REQUEST WHERE fk_User_request_id = #{userRequestId}
+  	</delete>
+  	
+  	<update id="updateEntityChangeRequestById" parameterType="EntityChangeRequestDto">
+    	UPDATE ENTITY_CHANGE_REQUEST
+    	<set>
+    	<!-- 
+			<if test="lastModifiedTimeStamp != null and lastModifiedTimeStamp != ''"> 
+	    		last_modified_ts = #{lastModifiedTimeStamp},
+	    	</if>
+	    	-->
+	    		   	
+	    	<if test="application_id != null and application_id != ''">
+	    		application_id = #{application_id},
+	    	</if>
+	    	
+	    	<if test="propBusEntityCode != null and propBusEntityCode != ''">
+	    		proposed_business_entity_ct = #{propBusEntityCode},
+	    	</if>
+	    	
+	    	<if test="curBusEntityCode != null and curBusEntityCode !=''">
+    			CURRENT_BUSINESS_ENTITY_CT = #{curBusEntityCode},
+    		</if>
+    	   	 
+	    	<!-- <if test="createUserId != null and createUserId != ''">
+	    		create_user_id = #{createUserId},
+	    	</if>
+	    	
+	    	<if test="lastModifiedUserId != null and lastModifiedUserId != ''">
+	    		last_modified_user_id = #{lastModifiedUserId},
+	    	</if>-->
+	    	
+	    	<if test="microEntityTypeCode != null and microEntityTypeCode != ''">
+	    		MICRO_ENTITY_TYPE_CT = #{microEntityTypeCode},
+	    	</if>
+	    	
+	    	<if test="microEntityGrossCert != null and microEntityGrossCert != ''">
+	    		micro_entity_gross_certif_in = #{microEntityGrossCert},
+	    	</if>
+	    	
+	    	<if test="microEntityInstCert != null and microEntityInstCert != ''">
+	    		MICRO_ENTITY_INST_CERTIF_CT = #{microEntityInstCert},
+	    	</if>
+	    	
+	    	<if test="attorneyDocketNumber != null and attorneyDocketNumber != ''">
+	    		ATTORNEY_DOCKET_NO = #{attorneyDocketNumber},
+	    	</if>
+	    	
+	    	<if test="title != null and title != ''">
+	    		INVENTION_TITLE_TX = #{title},
+	    	</if>
+	    	
+	    	<if test="customerNumber != null and customerNumber != ''">
+	    		customer_no = #{customerNumber}
+	    	</if>
+	 	</set>
+		WHERE fk_user_request_id = #{fKeyUserRequestId}    	
+  	</update>
+</mapper>
